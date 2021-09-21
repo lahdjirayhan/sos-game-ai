@@ -1,0 +1,6 @@
+.game {
+    display: flex;
+    flex-direction: row;
+    height: 60vh;
+    border: solid black 5px;
+}
