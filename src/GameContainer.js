@@ -97,7 +97,7 @@ class GameContainer extends React.Component {
             status = 'There is NO game in progress.'
         }
         return (
-            <div className='game'>
+            <div className='game-container'>
                 <Game gameInProgress={this.props.gameInProgress} />
 
                 <p>This is game container.</p>

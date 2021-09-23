@@ -1,13 +1,20 @@
-.game {
+.game-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     height: 60vh;
     border: solid black 5px;
 }
 
-.board-row:after {
+.board {
+    background-color: chocolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.board-row {
     clear: both;
-    content: "";
     display: table;
 }
 
