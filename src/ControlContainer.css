@@ -1,0 +1,8 @@
+.start-resign-button {
+    text-align: center;
+    display: inline-block;
+    color: black;
+    background-color: cornflowerblue;
+    width: 120px;
+    height: 40px;
+}
