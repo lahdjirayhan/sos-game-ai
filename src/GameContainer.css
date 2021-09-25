@@ -13,10 +13,10 @@
     justify-content: center;
 }
 
-.board-row {
+/* .board-row {
     clear: both;
     display: table;
-}
+} */
 
 .square {
     background: rgb(255, 223, 134);

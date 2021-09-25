@@ -12,7 +12,7 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            size: Math.sqrt(this.props.squares.length),
+            size: Math.sqrt(props.squares.length),
         }
     }
     renderSquare(i) {
@@ -53,32 +53,13 @@ class Board extends React.Component {
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            squares: Array(5 * 5).fill(null),
-        }
-    }
-    reset() {
-        this.setState({
-            squares: Array(5 * 5).fill(null),
-        });
-    }
-
-    handleClick(i) {
-        if (!this.props.gameInProgress) {
-            return;
-        }
-        const squares = this.state.squares;
-        squares[i] = 'X';
-        this.setState({
-            squares: squares,
-        });
     }
 
     render() {
         return (
             <Board
-                squares={this.state.squares}
-                onClick={(i) => this.handleClick(i)}
+                squares={this.props.squares}
+                onClick={(i) => this.props.handleClick(i)}
             />
         )
     }
@@ -98,7 +79,11 @@ class GameContainer extends React.Component {
         }
         return (
             <div className='game-container'>
-                <Game gameInProgress={this.props.gameInProgress} />
+                <Game
+                    gameInProgress={this.props.gameInProgress}
+                    squares={this.props.squares}
+                    handleClick={(i) => this.props.handleClick(i)}
+                />
 
                 <p>This is game container.</p>
 

@@ -7,7 +7,19 @@ class MainContainer extends React.Component {
         super(props);
         this.state = {
             gameInProgress: false,
+            squares: Array(5 * 5).fill(null),
         };
+    }
+    
+    handleClick(i) {
+        if (!this.state.gameInProgress) {
+            return;
+        }
+        const squares = this.state.squares;
+        squares[i] = 'X';
+        this.setState({
+            squares: squares,
+        });
     }
 
     startGame() {
@@ -19,6 +31,7 @@ class MainContainer extends React.Component {
     endGame() {
         this.setState({
             gameInProgress: false,
+            squares: Array(5 * 5).fill(null),
         });
     }
 
@@ -26,7 +39,11 @@ class MainContainer extends React.Component {
         return (
             <div className='main'>
                 This is main container.
-                <GameContainer gameInProgress={this.state.gameInProgress}/>
+                <GameContainer
+                    gameInProgress={this.state.gameInProgress}
+                    squares={this.state.squares}
+                    handleClick={(i) => this.handleClick(i)}
+                />
                 <ControlContainer
                     gameInProgress={this.state.gameInProgress}
                     startGame={() => this.startGame()}
