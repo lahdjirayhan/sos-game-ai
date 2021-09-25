@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from './Utils'
 import './GameContainer.css'
 
 function Square(props) {
@@ -56,11 +57,19 @@ class Game extends React.Component {
     }
 
     render() {
+        let sButtonClassName = "button-so" + (this.props.selectedMarker === "S" ? " button-so-selected" : "")
+        let oButtonClassName = "button-so" + (this.props.selectedMarker === "O" ? " button-so-selected" : "")
         return (
-            <Board
-                squares={this.props.squares}
-                onClick={(i) => this.props.handleClick(i)}
-            />
+            <div className="game">
+                <Board
+                    squares={this.props.squares}
+                    onClick={(i) => this.props.handleClick(i)}
+                />
+                <div className="button-so-container">
+                    <Button className={sButtonClassName} onClick={() => this.props.handleClickOnS()} text="S"/>
+                    <Button className={oButtonClassName} onClick={() => this.props.handleClickOnO()} text="O"/>
+                </div>
+            </div>
         )
     }
 }
@@ -85,6 +94,9 @@ class GameContainer extends React.Component {
                     gameInProgress={this.props.gameInProgress}
                     squares={this.props.squares}
                     handleClick={(i) => this.props.handleClick(i)}
+                    handleClickOnS={() => this.props.handleClickOnS()}
+                    handleClickOnO={() => this.props.handleClickOnO()}
+                    selectedMarker={this.props.selectedMarker}
                 />
 
                 <p>{status}</p>

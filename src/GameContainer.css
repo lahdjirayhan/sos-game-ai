@@ -7,6 +7,29 @@
     flex-grow: 1;
 }
 
+.game {
+    display: flex;
+    flex-direction: row;
+}
+
+.button-so-container {
+    background-color: brown;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.button-so {
+    height: 50px;
+    width: 50px;
+}
+
+.button-so-selected {
+    border: solid 2px red;
+}
+
 .board {
     background-color: chocolate;
     display: flex;

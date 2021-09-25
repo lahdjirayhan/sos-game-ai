@@ -9,23 +9,49 @@ class MainContainer extends React.Component {
         this.state = {
             gameInProgress: false,
             squares: Array(5 * 5).fill(null),
+            selectedMarker: null,
         };
     }
     
     handleClick(i) {
+        if (!this.state.gameInProgress || this.state.selectedMarker === null) {
+            return;
+        }
+
+        const squares = this.state.squares;
+        if (squares[i] !== null){
+            return
+        }
+
+        squares[i] = this.state.selectedMarker;
+        this.setState({
+            squares: squares,
+            selectedMarker: null,
+        });
+    }
+
+    handleClickOnS() {
         if (!this.state.gameInProgress) {
             return;
         }
-        const squares = this.state.squares;
-        squares[i] = 'X';
         this.setState({
-            squares: squares,
-        });
+            selectedMarker: "S",
+        })
+    }
+
+    handleClickOnO() {
+        if (!this.state.gameInProgress) {
+            return;
+        }
+        this.setState({
+            selectedMarker: "O",
+        })
     }
 
     startGame() {
         this.setState({
             gameInProgress: true,
+            selectedMarker: null,
         });
     }
 
@@ -33,6 +59,7 @@ class MainContainer extends React.Component {
         this.setState({
             gameInProgress: false,
             squares: Array(5 * 5).fill(null),
+            selectedMarker: null,
         });
     }
 
@@ -44,6 +71,9 @@ class MainContainer extends React.Component {
                     gameInProgress={this.state.gameInProgress}
                     squares={this.state.squares}
                     handleClick={(i) => this.handleClick(i)}
+                    handleClickOnS={() => this.handleClickOnS()}
+                    handleClickOnO={() => this.handleClickOnO()}
+                    selectedMarker={this.state.selectedMarker}
                 />
                 <ControlContainer
                     gameInProgress={this.state.gameInProgress}
