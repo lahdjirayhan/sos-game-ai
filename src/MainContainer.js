@@ -1,3 +1,4 @@
+import './MainContainer.css'
 import GameContainer from './GameContainer'
 import ControlContainer from './ControlContainer'
 import React from 'react';
@@ -38,7 +39,7 @@ class MainContainer extends React.Component {
     render() {
         return (
             <div className='main'>
-                This is main container.
+                <p> This is main container. </p>
                 <GameContainer
                     gameInProgress={this.state.gameInProgress}
                     squares={this.state.squares}

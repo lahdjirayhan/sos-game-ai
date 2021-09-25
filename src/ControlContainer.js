@@ -17,6 +17,8 @@ function ControlContainer(props) {
     }
     return (
         <div className='control'>
+            <p> This is control container </p>
+            
             {controlButton}
         </div>
     );
