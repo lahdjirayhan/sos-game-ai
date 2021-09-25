@@ -10,6 +10,7 @@
 .game {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 .button-so-container {
@@ -18,12 +19,12 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    flex-grow: 1;
 }
 
 .button-so {
     height: 50px;
     width: 50px;
+    margin: 10px;
 }
 
 .button-so-selected {
@@ -36,6 +37,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: 2px solid black;
+    padding: 3px;
 }
 
 /* .board-row {
