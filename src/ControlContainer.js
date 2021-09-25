@@ -1,12 +1,5 @@
 import './ControlContainer.css'
-
-function Button(props) {
-    return (
-        <button onClick={props.onClick} className={props.className}>
-            {props.text}
-        </button>
-    );
-}
+import Button from './Utils.js'
 
 function ControlContainer(props) {
     let controlButton;
