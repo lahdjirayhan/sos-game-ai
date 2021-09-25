@@ -2,6 +2,17 @@ import React from 'react'
 import Button from './Utils'
 import './GameContainer.css'
 
+function Scoreboard(props) {
+    let stringPlayerScore = "Your score: " + props.playerScore.toString()
+    let stringEnemyScore = "Enemy score: " + props.enemyScore.toString()
+    return (
+        <div className='scoreboard'>
+            <p>{stringPlayerScore}</p>
+            <p>{stringEnemyScore}</p>
+        </div>
+    )
+}
+
 function Square(props) {
     return (
         <button className="square" onClick={props.onClick}>
@@ -99,7 +110,10 @@ class GameContainer extends React.Component {
                     selectedMarker={this.props.selectedMarker}
                 />
 
-                <p>{status}</p>
+                <Scoreboard
+                    playerScore={this.props.playerScore}
+                    enemyScore={this.props.enemyScore}
+                />
             </div>
         );
     }
