@@ -3,6 +3,23 @@ import GameContainer from './GameContainer'
 import ControlContainer from './ControlContainer'
 import React from 'react';
 
+function turnJSStateIntoCNNState(squares) {
+    const cnnState = [];
+    for (const mark of ["S", "O"]) {
+        for (const tile of squares) {    
+            cnnState.push( (tile === mark ? 1: 0) )
+        }
+    }
+    return cnnState;
+}
+
+function divmodMimicAction(action) {
+    /* Mimics divmod(action, 2) from Python */
+    const loc = Math.floor(action/2);
+    const marker = action % 2;
+    return [loc, marker];
+}
+
 function countSOS(squares, loc) {
     /* Given that squares[loc] is already not null (filled), count how many SOS are made. 
        Follows the implementation I previously use in Python project sos-game-ai, 
@@ -64,8 +81,8 @@ function countSOS(squares, loc) {
         }
     
     } else if (squares[loc] === "O") {
-        const checkH = 0 < locCol < boardLength - 1;
-        const checkV = 0 < locRow < boardLength - 1;
+        const checkH = (0 < locCol) && (locCol < boardLength - 1);
+        const checkV = (0 < locRow) && (locRow < boardLength - 1);
         
         const stepH = 1;
         const stepV = boardLength;
@@ -114,10 +131,54 @@ class MainContainer extends React.Component {
 
             playerScore: 0,
             enemyScore: 0,
+
+            activeModelID: null,
         };
     }
     
-    handleClick(i) {
+    async fetchActionPromise(){
+        const response = await fetch("/api/predict", {
+            method: "POST",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "state": turnJSStateIntoCNNState(this.state.squares),
+                "model_id": this.state.activeModelID
+            })
+        });
+        try {
+            const json = await response.json();
+            return json.action;
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    async makeMoveAI() {
+        const action = await this.fetchActionPromise();
+        const [loc, marker] = divmodMimicAction(action);
+        console.log(loc, marker);
+        
+        const squares = this.state.squares;
+        if (squares[loc]) {
+            console.error("AI MOVES ILLEGALLY!")
+        }
+        squares[loc] = (marker === 0 ? "S" : "O");
+        const numberOfSOSCreated = countSOS(squares, loc);
+        const enemyScore = this.state.enemyScore + numberOfSOSCreated;
+        this.setState({
+            squares: squares,
+            enemyScore: enemyScore
+        });
+
+        if (numberOfSOSCreated > 0) {
+            await this.makeMoveAI()
+        }
+        
+    }
+    async handleClick(i) {
         if (!this.state.gameInProgress || this.state.selectedMarker === null) {
             return;
         }
@@ -135,6 +196,10 @@ class MainContainer extends React.Component {
             selectedMarker: null,
             playerScore: playerScore,
         });
+
+        if (numberOfSOSCreated === 0) {
+            await this.makeMoveAI()
+        }
     }
 
     handleClickOnS() {
@@ -161,6 +226,8 @@ class MainContainer extends React.Component {
             selectedMarker: null,
             playerScore: 0,
             enemyScore: 0,
+
+            activeModelID: "experiment_cnn_2/best_model.zip",
         });
     }
 
@@ -169,6 +236,8 @@ class MainContainer extends React.Component {
             gameInProgress: false,
             squares: Array(5 * 5).fill(null),
             selectedMarker: null,
+
+            activeModelID: null,
         });
     }
 
