@@ -133,10 +133,10 @@ class MainContainer extends React.Component {
             enemyScore: 0,
 
             activeModelID: null,
+            listModelID: null,
         };
     }
-    
-    async fetchActionPromise(){
+    async fetchActionPromise() {
         const response = await fetch("/api/predict", {
             method: "POST",
             cache: "no-cache",
@@ -207,7 +207,7 @@ class MainContainer extends React.Component {
             return;
         }
         this.setState({
-            selectedMarker: "S",
+            selectedMarker: (this.state.selectedMarker !== "S" ? "S" : null),
         })
     }
 
@@ -216,7 +216,7 @@ class MainContainer extends React.Component {
             return;
         }
         this.setState({
-            selectedMarker: "O",
+            selectedMarker: (this.state.selectedMarker !== "O" ? "O" : null),
         })
     }
 
