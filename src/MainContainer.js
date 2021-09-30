@@ -136,6 +136,15 @@ class MainContainer extends React.Component {
             listModelID: null,
         };
     }
+
+    componentDidMount() {
+        fetch("/api/list")
+        .then(response => response.json())
+        .then(json => json.model_ids)
+        .then(result => this.setState({listModelID: result}))
+        .catch(error => console.error(error))
+    }
+
     async fetchActionPromise() {
         const response = await fetch("/api/predict", {
             method: "POST",
@@ -157,6 +166,7 @@ class MainContainer extends React.Component {
     }
 
     async makeMoveAI() {
+        if (!this.state.gameInProgress) {return;}
         const action = await this.fetchActionPromise();
         const [loc, marker] = divmodMimicAction(action);
         console.log(loc, marker);
@@ -172,6 +182,12 @@ class MainContainer extends React.Component {
             squares: squares,
             enemyScore: enemyScore
         });
+
+        if (squares.filter(x => x).length === squares.length) {
+            this.setState({
+                gameInProgress: false,
+            })
+        }
 
         if (numberOfSOSCreated > 0) {
             await this.makeMoveAI()
@@ -197,6 +213,12 @@ class MainContainer extends React.Component {
             playerScore: playerScore,
         });
 
+        if (squares.filter(x => x).length === squares.length) {
+            this.setState({
+                gameInProgress: false,
+            })
+        }
+
         if (numberOfSOSCreated === 0) {
             await this.makeMoveAI()
         }
@@ -220,14 +242,19 @@ class MainContainer extends React.Component {
         })
     }
 
+    handleModelSelectionChange(dropdownSelection) {
+        this.setState({
+            activeModelID: dropdownSelection.target.value
+        });
+    }
+
     startGame() {
+        if (!this.state.activeModelID) {return;}
         this.setState({
             gameInProgress: true,
             selectedMarker: null,
             playerScore: 0,
             enemyScore: 0,
-
-            activeModelID: "experiment_cnn_2/best_model.zip",
         });
     }
 
@@ -261,6 +288,10 @@ class MainContainer extends React.Component {
 
                     startGame={() => this.startGame()}
                     stopGame={() => this.endGame()}
+
+                    onChange={(i) => this.handleModelSelectionChange(i)}
+                    selectedValue={this.state.activeModelID}
+                    modelList={this.state.listModelID}
                 />
             </div>
         );

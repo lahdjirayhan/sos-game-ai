@@ -1,6 +1,24 @@
 import './ControlContainer.css'
 import Button from './Utils.js'
 
+function ModelDropdownSelect(props) {
+    return (
+        <select id='model-dropdown'
+        className='model-dropdown'
+        value={props.selectedValue}
+        onChange={props.onChange}>
+            <option value={null} disabled selected hidden>
+                Please select a model
+            </option>
+            {props.modelList ? props.modelList.map(modelID => (
+                <option value={modelID}>
+                    {modelID}
+                </option>
+            )) : null}
+        </select>
+    );
+}
+
 function ControlContainer(props) {
     let controlButton;
     if (props.gameInProgress){
@@ -12,6 +30,12 @@ function ControlContainer(props) {
         <div className='control'>
             <p> This is control container </p>
             
+            <ModelDropdownSelect
+                selectedValue={props.selectedValue}
+                onChange={props.onChange}
+                modelList={props.modelList}
+            />
+
             {controlButton}
         </div>
     );
