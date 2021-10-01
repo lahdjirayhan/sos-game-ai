@@ -109,16 +109,18 @@ function countSOS(squares, loc) {
     }
 
     let numberOfSOSCreated = 0;
+    let arrLineFromTo = [];
     indexesToCheckForSOS.forEach(indexes => {
         /* Get squares multiple indexes, https://stackoverflow.com/a/67835428/11316205 */
         let potentialSOS = indexes.map(i => squares[i]);
 
         if (potentialSOS.join('') === "SOS") {
             numberOfSOSCreated++;
+            arrLineFromTo.push([indexes[0], indexes[indexes.length - 1]]);
         }
     })
 
-    return numberOfSOSCreated;
+    return [numberOfSOSCreated, arrLineFromTo];
 }
 
 class MainContainer extends React.Component {
@@ -131,6 +133,11 @@ class MainContainer extends React.Component {
 
             playerScore: 0,
             enemyScore: 0,
+
+            lines: [],
+
+            playerLineColor: "blue",
+            enemyLineColor: "red",
 
             activeModelID: null,
             listModelID: null,
@@ -178,11 +185,19 @@ class MainContainer extends React.Component {
             console.error("AI MOVES ILLEGALLY!")
         }
         squares[loc] = (marker === 0 ? "S" : "O");
-        const numberOfSOSCreated = countSOS(squares, loc);
+        const [numberOfSOSCreated, arrLineFromTo] = countSOS(squares, loc);
         const enemyScore = this.state.enemyScore + numberOfSOSCreated;
+        const lines = this.state.lines;
+        arrLineFromTo.forEach(startEnds => {
+            lines.push({
+                "startEnd": startEnds,
+                "color": this.state.enemyLineColor,
+            });
+        });
         this.setState({
             squares: squares,
-            enemyScore: enemyScore
+            enemyScore: enemyScore,
+            lines: lines,
         });
 
         if (squares.filter(x => x).length === squares.length) {
@@ -207,18 +222,28 @@ class MainContainer extends React.Component {
         }
 
         squares[i] = this.state.selectedMarker;
-        const numberOfSOSCreated = countSOS(squares, i);
+        const [numberOfSOSCreated, arrLineFromTo] = countSOS(squares, i);
         const playerScore = this.state.playerScore + numberOfSOSCreated;
+        const lines = this.state.lines;
+        arrLineFromTo.forEach(startEnds => {
+            lines.push({
+                "startEnd": startEnds,
+                "color": this.state.playerLineColor,
+            });
+        });
         this.setState({
             squares: squares,
-            selectedMarker: null,
             playerScore: playerScore,
+            lines: lines,
+
+            selectedMarker: null,
         });
 
         if (squares.filter(x => x).length === squares.length) {
             this.setState({
                 gameInProgress: false,
-            })
+            });
+            return;
         }
 
         if (numberOfSOSCreated === 0) {
@@ -263,7 +288,6 @@ class MainContainer extends React.Component {
                 enemyMovesFirst: true,
             });
         }
-        
     }
 
     async startGame() {
@@ -275,6 +299,7 @@ class MainContainer extends React.Component {
             selectedMarker: null,
             playerScore: 0,
             enemyScore: 0,
+            lines: [],
         }, () => {
             /* https://stackoverflow.com/questions/38558200/react-setstate-not-updating-immediately */
             if (this.state.enemyMovesFirst) {
@@ -302,6 +327,8 @@ class MainContainer extends React.Component {
                     handleClick={(i) => this.handleClick(i)}
                     handleClickOnS={() => this.handleClickOnS()}
                     handleClickOnO={() => this.handleClickOnO()}
+
+                    lines={this.state.lines}
                 />
                 <ControlContainer
                     gameInProgress={this.state.gameInProgress}
