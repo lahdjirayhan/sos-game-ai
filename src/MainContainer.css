@@ -1,0 +1,6 @@
+.main {
+    border: 2px solid blueviolet;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
