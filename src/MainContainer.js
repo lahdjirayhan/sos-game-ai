@@ -134,6 +134,8 @@ class MainContainer extends React.Component {
 
             activeModelID: null,
             listModelID: null,
+
+            enemyMovesFirst: false,
         };
     }
 
@@ -154,7 +156,7 @@ class MainContainer extends React.Component {
             },
             body: JSON.stringify({
                 "state": turnJSStateIntoCNNState(this.state.squares),
-                "model_id": this.state.activeModelID
+                "model_id": this.state.activeModelID,
             })
         });
         try {
@@ -248,30 +250,48 @@ class MainContainer extends React.Component {
         });
     }
 
-    startGame() {
+    handleTurnSelectionChange(dropdownSelection) {
+        if (this.state.gameInProgress) {return;}
+        let moveFirst = dropdownSelection.target.value;
+        console.log(moveFirst);
+        if (moveFirst === "player") {
+            this.setState({
+                enemyMovesFirst: false,
+            });
+        } else if (moveFirst === "AI") {
+            this.setState({
+                enemyMovesFirst: true,
+            });
+        }
+        
+    }
+
+    async startGame() {
         if (!this.state.activeModelID) {return;}
+        
         this.setState({
+            squares: Array(5 * 5).fill(null),
             gameInProgress: true,
             selectedMarker: null,
             playerScore: 0,
             enemyScore: 0,
-        });
+        }, () => {
+            /* https://stackoverflow.com/questions/38558200/react-setstate-not-updating-immediately */
+            if (this.state.enemyMovesFirst) {
+            this.makeMoveAI();
+        }});
     }
 
     endGame() {
         this.setState({
             gameInProgress: false,
-            squares: Array(5 * 5).fill(null),
             selectedMarker: null,
-
-            activeModelID: null,
         });
     }
 
     render() {
         return (
             <div className='main'>
-                <p> This is main container. </p>
                 <GameContainer
                     gameInProgress={this.state.gameInProgress}
                     squares={this.state.squares}
@@ -289,9 +309,12 @@ class MainContainer extends React.Component {
                     startGame={() => this.startGame()}
                     stopGame={() => this.endGame()}
 
-                    onChange={(i) => this.handleModelSelectionChange(i)}
-                    selectedValue={this.state.activeModelID}
+                    selectedValueModel={this.state.activeModelID}
+                    onChangeModel={(i) => this.handleModelSelectionChange(i)}
                     modelList={this.state.listModelID}
+
+                    onChangeTurn={(i) => this.handleTurnSelectionChange(i)}
+                    selectedValueTurn={(this.state.enemyMovesFirst ? "AI": "player")}
                 />
             </div>
         );

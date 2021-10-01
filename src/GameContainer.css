@@ -5,6 +5,7 @@
     /* height: 60vh; */
     border: solid black 5px;
     flex-grow: 1;
+    padding: 10px;
 }
 
 .game {

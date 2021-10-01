@@ -8,7 +8,7 @@ function ModelDropdownSelect(props) {
         value={props.selectedValue}
         onChange={props.onChange}>
             <option value={null} disabled selected hidden>
-                Please select a model
+                Please select an enemy
             </option>
             {props.modelList ? props.modelList.map(modelID => (
                 <option value={modelID}>
@@ -19,20 +19,39 @@ function ModelDropdownSelect(props) {
     );
 }
 
+function FirstTurnDropdownSelect(props) {
+    return (
+    <select id='turn-dropdown'
+    className='turn-dropdown'
+    value={props.selectedValue}
+    onChange={props.onChange}>
+        <option value={"AI"}>
+            AI moves first
+        </option>
+        <option value={"player"}>
+            I move first
+        </option>
+    </select>
+    )
+}
+
 function ControlContainer(props) {
     let controlButton;
     if (props.gameInProgress){
         controlButton = <Button onClick={props.stopGame} className='start-resign-button' text="RESIGN"/>
     } else {
-        controlButton = <Button onClick={props.startGame} className='start-resign-button' text="START GAME"/>
+        controlButton = <Button onClick={props.startGame} className='start-resign-button' text="START"/>
     }
     return (
         <div className='control'>
-            <p> This is control container </p>
-            
+            <FirstTurnDropdownSelect 
+                selectedValue={props.selectedValueTurn}
+                onChange={props.onChangeTurn}
+            />
+
             <ModelDropdownSelect
-                selectedValue={props.selectedValue}
-                onChange={props.onChange}
+                selectedValue={props.selectedValueModel}
+                onChange={props.onChangeModel}
                 modelList={props.modelList}
             />
 

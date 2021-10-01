@@ -99,8 +99,6 @@ class GameContainer extends React.Component {
         }
         return (
             <div className='game-container'>
-                <p>This is game container.</p>
-                
                 <Game
                     gameInProgress={this.props.gameInProgress}
                     squares={this.props.squares}
